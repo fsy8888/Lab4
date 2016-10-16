@@ -1,9 +1,15 @@
+<<<<<<< HEAD
 /* 
  * Author: Kevin Wang
  * Created Dated: 2016-9-13
  */
 
 package lab1;
+=======
+﻿package lab1;
+
+//hahahahahahahhahah
+>>>>>>> 1141100202
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,7 +29,11 @@ public class Calculator {
 	public static Pattern pil = Pattern.compile("[^\\+\\-\\*\\^a-zA-Z0-9\\(\\)\\s]");
 
 	/*
+<<<<<<< HEAD
 	 * 按+/-分解表达式， 在index_neg中记录符号的位置， 返回分解表达式
+=======
+	 * 按+/-分解表达式， 在index_neg中记录符号的位置， 返回分解表达式b222
+>>>>>>> 1141100202
 	 */
 	public static List<String> split(String str, List<Boolean> index_neg) {
 		StringBuffer s = new StringBuffer(str);
@@ -229,5 +239,8 @@ public class Calculator {
 		}
 	}
 }
+<<<<<<< HEAD
 
 //Finished
+=======
+>>>>>>> 1141100202
