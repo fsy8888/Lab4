@@ -1,5 +1,7 @@
 ﻿package lab1;
 
+//hahahahahahahhahah
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
