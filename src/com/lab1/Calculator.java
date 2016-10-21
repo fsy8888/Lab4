@@ -2,10 +2,9 @@
  * Created Dated: 2016-9-13
  */
 
-package lab1;
+package com.lab1;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -13,20 +12,44 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.regex.*;
 
+/**
+ * @author Kevin Wang
+ *
+ */
 public class Calculator {
-	public static Pattern p = Pattern.compile("\\+|\\-|\\*|\\^|[a-zA-Z]+|\\d+|\\(|\\)");
-	public static Pattern pnum = Pattern.compile("\\d+");
-	public static Pattern pmul = Pattern.compile("\\*");
-	public static Pattern palph = Pattern.compile("[a-zA-Z]+");
-	public static Pattern pop = Pattern.compile("\\+|\\-|\\*|\\^");
-	public static Pattern pil = Pattern.compile("[^\\+\\-\\*\\^a-zA-Z0-9\\(\\)\\s]");
+/**
+*
+*/
+	private static Pattern p = Pattern.compile("\\+|\\-|\\*|\\^|[a-zA-Z]+|\\d+|\\(|\\)");
+	/**
+	 *
+	 */
+	private static Pattern pnum = Pattern.compile("\\d+");
 
-	/*
+//	private static Pattern pmul = Pattern.compile("\\*");
+	/**
+	 *
+	 */
+	private static Pattern palph = Pattern.compile("[a-zA-Z]+");
+
+	/**
+	 *
+	 */
+	private static Pattern pop = Pattern.compile("\\+|\\-|\\*|\\^");
+
+	/**
+	 *
+	 */
+	private static Pattern pil = Pattern.compile("[^\\+\\-\\*\\^a-zA-Z0-9\\(\\)\\s]");
+
+	/**
+	 * @param str
+	 * @param indexNeg
+	 * @return List<String> split
 	 * 按+/-分解表达式， 在index_neg中记录符号的位置， 返回分解表达式
 	 */
-	public static List<String> split(String str, List<Boolean> index_neg) {
+	public static List<String> split(String str, List<Boolean> indexNeg) {
 		StringBuffer s = new StringBuffer(str);
-		;
 		List<String> re = new LinkedList<String>();
 		int plus = s.indexOf("+");
 		int minus = s.indexOf("-");
@@ -35,20 +58,20 @@ public class Calculator {
 				if (plus < minus) {
 					re.add(new String(s.substring(0, plus)));
 					s.delete(0, plus + 1);
-					index_neg.add(false);
+					indexNeg.add(false);
 				} else {
 					re.add(new String(s.substring(0, minus)));
 					s.delete(0, minus + 1);
-					index_neg.add(true);
+					indexNeg.add(true);
 				}
 			} else if (plus != -1) {
 				re.add(new String(s.substring(0, plus)));
 				s.delete(0, plus + 1);
-				index_neg.add(false);
+				indexNeg.add(false);
 			} else {
 				re.add(new String(s.substring(0, minus)));
 				s.delete(0, minus + 1);
-				index_neg.add(true);
+				indexNeg.add(true);
 			}
 			plus = s.indexOf("+");
 			minus = s.indexOf("-");
@@ -57,13 +80,15 @@ public class Calculator {
 		return re;
 	}
 
-	/*
-	 * 将表达式重构，包括将数字放置左侧，合并同类项， 返回重构结果
+	/**
+	 * @param exp
+	 * @return
+	 * 将表达式重构，包括将数字放置左侧，合并同类项，返回重构结果.
 	 */
 	public static String refactor(String exp) {
 		String re = "";
-		List<Boolean> index_neg = new ArrayList<Boolean>();
-		List<String> exps = split(exp, index_neg);
+		List<Boolean> indexNeg = new ArrayList<Boolean>();
+		List<String> exps = split(exp, indexNeg);
 		int index = 0;
 		for (String e : exps) {
 			String[] items = e.split("\\*");
@@ -111,7 +136,7 @@ public class Calculator {
 			}
 			if (re.isEmpty()) {
 				re = i;
-			} else if (index_neg.get(index)) {
+			} else if (indexNeg.get(index)) {
 				re += "-" + i;
 				index += 1;
 			} else {
@@ -120,13 +145,14 @@ public class Calculator {
 			}
 		}
 		return re;
-
 	}
 
-	/*
+	/**
+	 * @param str
+	 * @return
 	 * 表达式合法性检查，并补充省略的乘法符号 返回补充结果
 	 */
-	public static String generate_items(String str) {
+	public static String generateItems(String str) {
 		Matcher m = p.matcher(str);
 		Matcher mil = pil.matcher(str);
 		List<String> exp = new LinkedList<String>();
@@ -161,8 +187,12 @@ public class Calculator {
 		return s.toString();
 	}
 
-	/* 返回表达式中全部变量 */
-	public static List<String> all_sym(String str) {
+	/**
+	 * @param str
+	 * @return
+	 * 返回表达式中全部变量
+	 */
+	public static List<String> allSym(String str) {
 		Matcher m = palph.matcher(str);
 		List<String> sym = new ArrayList<String>();
 		while (m.find()) {
@@ -171,7 +201,11 @@ public class Calculator {
 		return sym;
 	}
 
-	/* 拆分表达式并返回结果 */
+	/**
+	 * @param str
+	 * @return
+	 * 拆分表达式并返回结果
+	 */
 	public static List<String> toList(String str) {
 		Matcher m = p.matcher(str);
 		List<String> exp = new LinkedList<String>();
@@ -181,15 +215,17 @@ public class Calculator {
 		return exp;
 	}
 
-	/* 主函数负责对输入操作的判断与执行 */
+	/**
+	 * @param args
+	 * 主函数负责对输入操作的判断与执行
+	 */
 	public static void main(String[] args) {
 		String str = "3+2*x+x*y*3*x*z";
-
 		System.out.println("Enter 'q' to quit\n");
 		Scanner in = new Scanner(System.in);
 		Node tree = null;
-		Map<String, String> symbol_table = new HashMap<String, String>();
-		List<String> all_sym = new ArrayList<String>();
+		Map<String, String> symbolTable = new HashMap<String, String>();
+		List<String> allSym = new ArrayList<String>();
 		while (true) {
 			str = in.nextLine();
 			if (str.equals("q")) {
@@ -198,31 +234,31 @@ public class Calculator {
 				String[] str2 = str.split(" ");
 				for (int i = 1; i < str2.length; i += 1) {
 					String[] sim = str2[i].split("=");
-					symbol_table.put(sim[0], sim[1]);
+					symbolTable.put(sim[0], sim[1]);
 				}
 				String r1 = tree.calculate();
 				// System.out.println(r1);
-				Node sim_tree = new Node(toList(refactor(generate_items(r1))));
-				sim_tree.expression();
-				String r2 = sim_tree.calculate();
+				Node simTree = new Node(toList(refactor(generateItems(r1))));
+				simTree.expression();
+				String r2 = simTree.calculate();
 				System.out.println(r2);
-				symbol_table.clear();
+				symbolTable.clear();
 			} else if (str.startsWith("!d/d")) {
 				String dsym = str.substring(4, str.length());
-				if (!all_sym.contains(dsym)) {
+				if (!allSym.contains(dsym)) {
 					System.out.println("Error, no variable");
 				} else {
-					Node.set_dsym(dsym);
+					Node.setDsym(dsym);
 					String r1 = tree.derivative();
-					Node sim_tree = new Node(toList(refactor(generate_items(r1))));
-					sim_tree.expression();
-					String r2 = sim_tree.calculate();
+					Node simTree = new Node(toList(refactor(generateItems(r1))));
+					simTree.expression();
+					String r2 = simTree.calculate();
 					System.out.println(r2);
 				}
 			} else {
-				all_sym = all_sym(str);
-				tree = new Node(toList(refactor(generate_items(str))));
-				Node.set_table(symbol_table);
+				allSym = allSym(str);
+				tree = new Node(toList(refactor(generateItems(str))));
+				Node.setTable(symbolTable);
 				tree.expression();
 			}
 		}
